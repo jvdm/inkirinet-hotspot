@@ -16,28 +16,30 @@ class ContractManager(models.Manager):
 
     def create_contract(self, email, **extra_attrs):
         """Create a new contract and its attached user."""
-        # Currently we enforce 1:1 relationship with Users.  Moving
-        # away from this would mean using a "get or create" from users
-        # or a different business logic to create users first then
-        # contracts.
-        user_fields = ('first_name', 'last_name')
-        user_attrs = {
-            f: extra_attrs[f]
-                for f in user_fields
-                if f in extra_attrs
-        }
-        with transaction.atomic():
-            user = User.objects.create_user(
-                       username=email,
-                       email=email,
-                       **user_attrs)
-            contract = Contract.objects.create(user=user, **extra_attrs)
+        contract = Contract(email=email, **extra_attrs)
+        contract.save()
         return contract
+
+    def create(self, **kwds):
+        return self.create_contract(**kwds)
 
 
 class Contract(models.Model):
 
     objects = ContractManager()
+
+    email = models.EmailField(
+        __('email address'),
+        blank=True,
+        unique=True)
+
+    first_name = models.CharField(
+        __('first name'),
+        max_length=150)
+
+    last_name = models.CharField(
+        __('last name'),
+        max_length=150)
 
     user = models.ForeignKey(
         User,
@@ -56,5 +58,14 @@ class Contract(models.Model):
         help_text=__('Last date and time when contract was updated.'))
 
     @property
-    def email(self):
-        return self.user.email
+    def full_name(self):
+        return f"{self.first_name} {self.last_name}"
+
+    def save(self, **kwds):
+        with transaction.atomic():
+            self.user, _ = User.objects.get_or_create(
+                email=self.email,
+                defaults={'username': self.email,
+                          'first_name': self.first_name,
+                          'last_name': self.last_name})
+            super().save(**kwds)
