@@ -81,6 +81,16 @@ DATABASES = {
     }
 }
 
+# Authentication
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'inkirinethotspot.apps.contracts.auth.ContractsAuthenticationBackend',
+]
+
+LOGIN_REDIRECT_URL = '/'
+
+LOGIN_URL = '/login/'
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
