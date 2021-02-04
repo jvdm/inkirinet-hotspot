@@ -51,7 +51,12 @@ class Contract(models.Model):
         default=True,
         verbose_name=__('is active'),
         help_text=__('Inactive contracts have all their devices disabled.'))
-
+    
+    max_devices = models.PositiveIntegerField(
+        default=2,
+        verbose_name=__('Maximum devices.'),
+        help_text=__('The maximum number of devices allowed in this contract.'))
+    
     created_at = models.DateTimeField(
         auto_now_add=True,
         verbose_name=__('Created At'),
@@ -69,6 +74,15 @@ class Contract(models.Model):
     @property
     def has_devices(self):
         return self.devices.exists()
+    
+    @property
+    def devices_count(self):
+        return self.devices.count()
+    
+    @property
+    def devices_allowed(self):
+        allowed = self.max_devices - self.devices_count
+        return allowed if allowed >= 0 else 0
 
     def save(self, **kwds):
         with transaction.atomic():
