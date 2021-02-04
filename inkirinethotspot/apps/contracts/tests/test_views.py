@@ -32,22 +32,163 @@ class TestAuthenticatedHome(TestCase):
         contract = response.context.get('contract')
         self.assertIsNotNone(contract)
         self.assertEquals(self.contract, contract)
+        self.assertContains(response, contract.full_name)
 
-    def test_when_get_without_devices_then_empty_table(self):
-        response = self.get()
-        self.assertContains(
-            response,
-            "You haven't registered any devices yet.")
+    def test_when_contract_inactive_and_no_devices_and_not_allowed(self):
 
-    def test_when_get_with_devices_then_show_table(self):
-        self.contract.devices.create(mac_address='weird-mac-address')
+        self.contract.is_active = False
+        self.contract.max_devices = 0
+        self.contract.save()
+
         response = self.get()
-        self.assertContains(
-            response,
-            "weird-mac-address")
-        self.assertNotContains(
-            response,
-            "You haven't registered any devices yet.")
+
+        self.assertContains(response, 'Inactive contracts have all their devices disabled')
+
+        self.assertNotContains(response, 'Your contract allows')
+        self.assertNotContains(response, 'Unfortunately, you cannot register new devices')
+        self.assertNotContains(response, 'You can register')
+
+        self.assertNotContains(response, "You haven't registered any devices yet")
+
+    def test_when_contract_inactive_and_no_devices_and_allowed(self):
+
+        self.contract.is_active = False
+        self.contract.max_devices = 3
+        self.contract.save()
+
+        response = self.get()
+
+        self.assertContains(response, 'Inactive contracts have all their devices disabled')
+
+        self.assertNotContains(response, 'Your contract allows')
+        self.assertNotContains(response, 'Unfortunately, you cannot register new devices')
+        self.assertNotContains(response, 'You can register')
+
+        self.assertNotContains(response, "You haven't registered any devices yet")
+
+    def test_when_contract_inactive_and_devices_and_not_allowed(self):
+
+        self.contract.is_active = False
+        self.contract.max_devices = 0
+        self.contract.save()
+
+        self.contract.devices.create(mac_address='mac-address-foo')
+        self.contract.devices.create(mac_address='max-address-bar')
+
+        response = self.get()
+
+        self.assertContains(response, 'Inactive contracts have all their devices disabled')
+
+        self.assertNotContains(response, 'Your contract allows')
+        self.assertNotContains(response, 'Unfortunately, you cannot register new devices')
+        self.assertNotContains(response, 'You can register')
+
+        self.assertNotContains(response, 'mac-address-foo')
+        self.assertNotContains(response, 'mac-address-bar')
+
+    def test_when_contract_inactive_and_devices_and_allowed(self):
+
+        self.contract.is_active = False
+        self.contract.max_devices = 3
+        self.contract.save()
+
+        self.contract.devices.create(mac_address='mac-address-foo')
+        self.contract.devices.create(mac_address='max-address-bar')
+
+        response = self.get()
+
+        self.assertContains(response, 'Inactive contracts have all their devices disabled')
+
+        self.assertNotContains(response, 'Your contract allows')
+        self.assertNotContains(response, 'Unfortunately, you cannot register new devices')
+        self.assertNotContains(response, 'You can register')
+
+        self.assertNotContains(response, 'mac-address-foo')
+        self.assertNotContains(response, 'mac-address-bar')
+
+    def test_when_contract_active_and_no_devices_and_not_allowed(self):
+
+        self.contract.is_active = True
+        self.contract.max_devices = 0
+        self.contract.save()
+
+        response = self.get()
+
+        self.assertNotContains(response, 'Inactive contracts have all their devices disabled')
+        
+        self.assertContains(response, 'Your contract allows <strong>0</strong> devices.')
+        
+        self.assertNotContains(response, 'You have <strong>0</strong> device registered')
+        self.assertContains(response, "You haven't registered any devices yet")
+
+        self.assertContains(response, 'Unfortunately, you cannot register new devices')
+        self.assertNotContains(response, 'You can register <strong>2</strong> additional device')
+
+    def test_when_contract_active_and_no_devices_and_allowed(self):
+
+        self.contract.is_active = True
+        self.contract.max_devices = 3
+        self.contract.save()
+
+        response = self.get()
+
+        self.assertNotContains(response, 'Inactive contracts have all their devices disabled')
+
+        self.assertContains(response, 'Your contract allows <strong>3</strong> devices.')
+
+        self.assertNotContains(response, 'You have <strong>0</strong> device registered')
+        self.assertContains(response, "You haven't registered any devices yet")
+
+        self.assertNotContains(response, 'Unfortunately, you cannot register new devices')
+        self.assertContains(response, 'You can register <strong>3</strong> additional device')
+
+    def test_when_contract_active_and_devices_and_not_allowed(self):
+
+        self.contract.is_active = True
+        self.contract.max_devices = 0
+        self.contract.save()
+
+        self.contract.devices.create(mac_address='mac-address-foo')
+        self.contract.devices.create(mac_address='max-address-bar')
+
+        response = self.get()
+
+        self.assertNotContains(response, 'Inactive contracts have all their devices disabled')
+
+        self.assertContains(response, 'Your contract allows <strong>0</strong> devices.')
+
+        self.assertContains(response, 'You have <strong>2</strong> devices registered')
+        self.assertNotContains(response, "You haven't registered any devices yet")
+
+        self.assertContains(response, 'Unfortunately, you cannot register new devices')
+        self.assertNotContains(response, 'You can register <strong>3</strong> additional device')
+
+        self.assertContains(response, '<td>mac-address-foo</td>', html=True)
+        self.assertContains(response, '<td>max-address-bar</td>', html=True)
+
+    def test_when_contract_active_and_devices_and_allowed(self):
+
+        self.contract.is_active = True
+        self.contract.max_devices = 3
+        self.contract.save()
+
+        self.contract.devices.create(mac_address='mac-address-foo')
+        self.contract.devices.create(mac_address='max-address-bar')
+
+        response = self.get()
+
+        self.assertNotContains(response, 'Inactive contracts have all their devices disabled')
+
+        self.assertContains(response, 'Your contract allows <strong>3</strong> devices.')
+
+        self.assertContains(response, 'You have <strong>2</strong> devices registered')
+        self.assertNotContains(response, "You haven't registered any devices yet")
+
+        self.assertNotContains(response, 'Unfortunately, you cannot register new devices')
+        self.assertContains(response, 'You can register <strong>1</strong> additional device')
+
+        self.assertContains(response, '<td>mac-address-foo</td>', html=True)
+        self.assertContains(response, '<td>max-address-bar</td>', html=True)
 
     def get(self):
         response = self.client.get(self.url)

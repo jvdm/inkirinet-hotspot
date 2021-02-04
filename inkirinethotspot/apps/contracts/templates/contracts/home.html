@@ -5,7 +5,7 @@
 {% block content %}
 <h2>{% trans 'Hello,' %} {{ contract.full_name }}</h2>
 
-<p>{% trans 'Your internet plan is' %} <strong>{{ contract.get_plan_type_display }}</strong>.</p>
+<p>{% trans 'Your internet plan is' %} <strong>{{ contract }}</strong>.</p>
 
 <p>{% trans 'Your contract is' %} {% if contract.is_active %}<span style="color: green">{% trans 'active' %}</span>{% else %}<span style="color: red">{% trans 'inactive' %}</span>{% endif %}.</p>
 
@@ -30,7 +30,6 @@
       <td>
         <form action="" method="post">
           {% csrf_token %}
-          <input type="hidden" id="id" name="id" value="{{ device.mac_address }}">
           <input type="submit" value="{% trans 'Remove' %}">
         </form>
       </td>
@@ -38,10 +37,31 @@
         {% endfor %}
   </tbody>
 </table>
-    {% else %}
-<p>{% blocktranslate %}You haven't registered any devices yet.{% endblocktranslate %}</p>
     {% endif %}
+<p>{% blocktranslate count max=contract.max_devices %}Your contract allows <strong>1</strong> device.{% plural %}Your contract allows <strong>{{ max }}</strong> devices.{% endblocktranslate %}
+    {% if contract.has_devices %}
+{% blocktranslate count count=contract.devices_count %}You have <strong>1</strong> device registered.{% plural %}You have <strong>{{ count }}</strong> devices registered.{% endblocktranslate %}
+    {% else %}
+{% blocktranslate %}You haven't registered any devices yet.{% endblocktranslate %}
+    {% endif %}
+
+    {% with allowed=contract.devices_allowed %}
+      {% if allowed <= 0 %}
+   {% blocktranslate %}Unfortunately, you cannot register new devices.  Contact your plan administrator to allow more devices or change your plan.{% endblocktranslate %}
+</p>
+      {% else %}
+   {% blocktranslate count allowed=allowed %}You can register <strong>1</strong> additional device.{% plural %}You can register <strong>{{ allowed }}</strong> additional devices.{% endblocktranslate %}.
+</p>
+<p>
+  <form action="" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="{% trans 'Register your current device' %}">
+  </form>
+</p>
+      {% endif %}
+    {% endwith %}
   {% else %}
-<p>{% blocktranslate %}Inactive contracts have all their devices disabled, contact Inkirinet's support to reactivate your contract.{% endblocktranslate %}</p>
+<p>{% blocktranslate %}Inactive contracts have all their devices disabled. Contact Inkirinet's support to reactivate your contract.{% endblocktranslate %}</p>
   {% endif %}
 {% endblock %}

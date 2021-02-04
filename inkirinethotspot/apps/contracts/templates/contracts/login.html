@@ -5,8 +5,9 @@
 {% block content %}
 <h2>{% trans 'Welcome' %}</h2>
 
-<p>{% blocktranslate %}Type your e-mail to open your contract details and manage your devices.{% endblocktranslate %}</p>
-<form action="{% url 'contracts:login' %}" method="post" id="login-form">
+<p>{% blocktranslate %}Tell us the e-mail you used to view your contract details and devices.{% endblocktranslate %}</p>
+
+<form action="{% url 'contracts:login' %}" method="post">
     {% csrf_token %}
     <p>{{ form }} <input type="submit" value="{% trans 'Submit' %}"></p>
 </form>
