@@ -22,3 +22,10 @@ class TestContract(TestCase):
         self.assertEquals(email, contract.user.username)
         db_contract = models.Contract.objects.get_from_email(contract.email)
         self.assertEquals(db_contract, contract)
+
+    def test_has_devices(self):
+        email = 'foobar@example.com'
+        contract = models.Contract.objects.create_contract(email)
+        self.assertFalse(contract.has_devices)
+        contract.devices.create(mac_address='foobar')
+        self.assertTrue(contract.has_devices)

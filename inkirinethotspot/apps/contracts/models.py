@@ -47,6 +47,11 @@ class Contract(models.Model):
         related_name='contracts',
         help_text=__('User this Contract belongs to.'))
 
+    is_active = models.BooleanField(
+        default=True,
+        verbose_name=__('is active'),
+        help_text=__('Inactive contracts have all their devices disabled.'))
+
     created_at = models.DateTimeField(
         auto_now_add=True,
         verbose_name=__('Created At'),
@@ -61,6 +66,10 @@ class Contract(models.Model):
     def full_name(self):
         return f"{self.first_name} {self.last_name}"
 
+    @property
+    def has_devices(self):
+        return self.devices.exists()
+
     def save(self, **kwds):
         with transaction.atomic():
             self.user, _ = User.objects.get_or_create(
@@ -69,3 +78,38 @@ class Contract(models.Model):
                           'first_name': self.first_name,
                           'last_name': self.last_name})
             super().save(**kwds)
+
+
+class Device(models.Model):
+
+    contract = models.ForeignKey(
+        Contract,
+        related_name='devices',
+        on_delete=models.SET_NULL,
+        null=True,
+        help_text=__('Contract this device belongs to.'))
+
+    mac_address = models.CharField(
+        max_length=17,
+        unique=True,
+        null=True)
+
+    description = models.CharField(
+        max_length=150,
+        verbose_name=__('description'),
+        help_text=__('A short device description.'))
+
+    has_lease = models.BooleanField(
+        default=False,
+        verbose_name=__('has static lease'),
+        help_text=__('Does this device have a static DHCP lease at Mikrotik?'))
+
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name=__('created At'),
+        help_text=__('Date and time when contract was created.'))
+
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        verbose_name=__('updated At'),
+        help_text=__('Last date and time when contract was updated.'))
