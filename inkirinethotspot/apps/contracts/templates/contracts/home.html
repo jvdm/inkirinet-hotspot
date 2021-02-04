@@ -1,0 +1,47 @@
+{% extends "contracts/base.html" %}
+
+{% load i18n %}
+
+{% block content %}
+<h2>{% trans 'Hello,' %} {{ contract.full_name }}</h2>
+
+<p>{% trans 'Your internet plan is' %} <strong>{{ contract.get_plan_type_display }}</strong>.</p>
+
+<p>{% trans 'Your contract is' %} {% if contract.is_active %}<span style="color: green">{% trans 'active' %}</span>{% else %}<span style="color: red">{% trans 'inactive' %}</span>{% endif %}.</p>
+
+<h3>{% trans 'Your Devices' %}</h3>
+  {% if contract.is_active %}
+    {% if contract.has_devices %}
+<table>
+  <thead>
+    <tr>
+      <th>{% trans 'MAC address' %}</th>
+      <th>{% trans 'Registration Date' %}</th>
+      <th>{% trans 'Network Status' %}</th>
+      <th>{% trans 'Action' %}</th>
+    </tr>
+  </thead>
+  <tbody>
+        {% for device in contract.devices.all %}
+    <tr>
+      <td>{{ device.mac_address }}</td>
+      <td>{{ device.created_at | date:"N t, Y" }}</td>
+      <td>{% if device.is_active %}<span style="color: green">{% trans 'Active' %}</span>{% else %}<span style="color: orange">{% trans 'Pending' %}</span>{% endif %}</td>
+      <td>
+        <form action="" method="post">
+          {% csrf_token %}
+          <input type="hidden" id="id" name="id" value="{{ device.mac_address }}">
+          <input type="submit" value="{% trans 'Remove' %}">
+        </form>
+      </td>
+    </tr>
+        {% endfor %}
+  </tbody>
+</table>
+    {% else %}
+<p>{% blocktranslate %}You haven't registered any devices yet.{% endblocktranslate %}</p>
+    {% endif %}
+  {% else %}
+<p>{% blocktranslate %}Inactive contracts have all their devices disabled, contact Inkirinet's support to reactivate your contract.{% endblocktranslate %}</p>
+  {% endif %}
+{% endblock %}

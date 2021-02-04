@@ -20,7 +20,7 @@ class TestAuthenticatedHome(TestCase):
     def setUp(self):
         self.contract = (models.Contract
                          .objects.create_contract('foobar@example.com'))
-        self.client.force_login(self.contract.user)
+        self.assertTrue(self.client.login(contract_email='foobar@example.com'))
 
     def test_when_get_then_template(self):
         response = self.get()
@@ -32,6 +32,22 @@ class TestAuthenticatedHome(TestCase):
         contract = response.context.get('contract')
         self.assertIsNotNone(contract)
         self.assertEquals(self.contract, contract)
+
+    def test_when_get_without_devices_then_empty_table(self):
+        response = self.get()
+        self.assertContains(
+            response,
+            "You haven't registered any devices yet.")
+
+    def test_when_get_with_devices_then_show_table(self):
+        self.contract.devices.create(mac_address='weird-mac-address')
+        response = self.get()
+        self.assertContains(
+            response,
+            "weird-mac-address")
+        self.assertNotContains(
+            response,
+            "You haven't registered any devices yet.")
 
     def get(self):
         response = self.client.get(self.url)

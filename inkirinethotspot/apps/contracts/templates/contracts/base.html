@@ -1,0 +1,24 @@
+{% extends "admin/base.html" %}
+
+{% load i18n %}
+
+{% block title %}Inkirinet{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">Inkirinet</h1>
+{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+  <a href="{% url 'contracts:home' %}">{% translate 'Home' %}</a>
+{% if contract %} &rsaquo; {{ contract.email }} {% endif %}
+</div>
+{% endblock %}
+
+{% block content %}
+{% endblock %}
+
+{% block footer %}
+    <hr/>
+    <p><em>© 2021 Comunidade Inkiri</em><p>
+{% endblock %}
