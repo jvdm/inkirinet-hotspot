@@ -7,9 +7,7 @@ from django.utils.translation import gettext_lazy as __
 class ContractLoginForm(forms.Form):
     """The home contract form used to login users."""
 
-    email = forms.EmailField(
-                label=__('Contract e-mail'),
-                help_text=__("Enter your Inkirinet Contract's e-mail."))
+    email = forms.EmailField(label='')
 
     error_messages = {
         'failed': __('Sorry, this contract was not found.'),
