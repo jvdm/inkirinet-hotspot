@@ -1,0 +1,4 @@
+recursive-include inkirinethotspot/apps/contracts/locale *.po *.mo
+recursive-include inkirinethotspot/apps/contracts/templates *
+graft static
+

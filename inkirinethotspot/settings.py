@@ -129,3 +129,16 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# RouterOS.
+
+ROUTEROS_API = {'host': '127.0.0.1',
+                'port': 8728,
+                'username': 'username',
+                'password': 'password',
+                'disable_ssl': True}
+
+# Google Sheets.
+
+GOOGLE_SHEETS = {'key_file': '',
+                 'spreadsheet_id': ''}

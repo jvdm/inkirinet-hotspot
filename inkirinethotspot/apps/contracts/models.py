@@ -51,12 +51,31 @@ class Contract(models.Model):
         default=True,
         verbose_name=__('is active'),
         help_text=__('Inactive contracts have all their devices disabled.'))
-    
+
+    PLAN_2MB = '2MB'
+    PLAN_4MB = '4MB'
+    PLAN_10MB = '10MB'
+    PLAN_50MB = '50MB'
+
+    PLAN_TYPES = [
+        (PLAN_2MB, __('2Mbps por dispositivo (ik$100)')),
+        (PLAN_4MB, __('4Mbps por dispositivo (ik$120)')),
+        (PLAN_10MB, __('10Mbps por dispositivo (ik$150)')),
+        (PLAN_50MB, __('Mais velocidade (ik$150 + ik$10 por cada 1Mbps)'))
+    ]
+
+    plan_type = models.CharField(
+        max_length=128,
+        choices=PLAN_TYPES,
+        default=PLAN_2MB,
+        verbose_name=__('Internet Plan'),
+        help_text=__('The internet plan for this contract.'))
+
     max_devices = models.PositiveIntegerField(
         default=2,
         verbose_name=__('Maximum devices.'),
         help_text=__('The maximum number of devices allowed in this contract.'))
-    
+
     created_at = models.DateTimeField(
         auto_now_add=True,
         verbose_name=__('Created At'),
@@ -74,11 +93,11 @@ class Contract(models.Model):
     @property
     def has_devices(self):
         return self.devices.exists()
-    
+
     @property
     def devices_count(self):
         return self.devices.count()
-    
+
     @property
     def devices_allowed(self):
         allowed = self.max_devices - self.devices_count
@@ -92,6 +111,9 @@ class Contract(models.Model):
                           'first_name': self.first_name,
                           'last_name': self.last_name})
             super().save(**kwds)
+
+    def __str__(self):
+        return f'{self.full_name} <{self.email}>'
 
 
 class Device(models.Model):
@@ -127,3 +149,6 @@ class Device(models.Model):
         auto_now=True,
         verbose_name=__('updated At'),
         help_text=__('Last date and time when contract was updated.'))
+
+    def __str__(self):
+        return self.mac_address

@@ -42,7 +42,7 @@
               </td>
               <td>{{ device.mac_address }}</td>
               <td>{{ device.created_at | date:"N t, Y" }}</td>
-              <td>{% if device.is_active %}<span style="color: green">{% trans 'Active' %}</span>{% else %}<span style="color: orange">{% trans 'Pending' %}</span>{% endif %}</td>
+              <td>{% if device.has_lease %}<span style="color: green">{% trans 'Active' %}</span>{% else %}<span style="color: orange">{% trans 'Pending' %}</span>{% endif %}</td>
               <td>
                    {{ form.DELETE }}
               </td>
