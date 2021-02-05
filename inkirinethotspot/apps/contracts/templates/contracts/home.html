@@ -12,31 +12,50 @@
 <h3>{% trans 'Your Devices' %}</h3>
   {% if contract.is_active %}
     {% if contract.has_devices %}
-<table>
-  <thead>
-    <tr>
-      <th>{% trans 'MAC address' %}</th>
-      <th>{% trans 'Registration Date' %}</th>
-      <th>{% trans 'Network Status' %}</th>
-      <th>{% trans 'Action' %}</th>
-    </tr>
-  </thead>
-  <tbody>
-        {% for device in contract.devices.all %}
-    <tr>
-      <td>{{ device.mac_address }}</td>
-      <td>{{ device.created_at | date:"N t, Y" }}</td>
-      <td>{% if device.is_active %}<span style="color: green">{% trans 'Active' %}</span>{% else %}<span style="color: orange">{% trans 'Pending' %}</span>{% endif %}</td>
-      <td>
-        <form action="" method="post">
-          {% csrf_token %}
-          <input type="submit" value="{% trans 'Remove' %}">
-        </form>
-      </td>
-    </tr>
-        {% endfor %}
-  </tbody>
-</table>
+<div style="padding: 2em 1em 2em 1em">
+    <form method="post">
+        {% csrf_token %}
+        {{ devices_formset.management_form }}
+        <table>
+          <thead>
+            <tr>
+              <th>{% trans 'Description' %}</th>
+              <th>{% trans 'MAC address' %}</th>
+              <th>{% trans 'Registration Date' %}</th>
+              <th>{% trans 'Network Status' %}</th>
+              <th>{% trans 'Remove' %}</th>
+            </tr>
+          </thead>
+          <tbody>
+                {% for form in devices_formset %}
+                  {% with device=form.instance %}
+            <tr>
+              <td>
+                  {{ form.id }} {{ form.description }}
+                    {% if form.errors %}
+                  <ul class="errorlist nonfield">
+                        {% for error in form.errors.values %}
+                      <li>{{ error }}</li>
+                        {% endfor %}
+                  </ul>
+                    {% endif %}
+              </td>
+              <td>{{ device.mac_address }}</td>
+              <td>{{ device.created_at | date:"N t, Y" }}</td>
+              <td>{% if device.is_active %}<span style="color: green">{% trans 'Active' %}</span>{% else %}<span style="color: orange">{% trans 'Pending' %}</span>{% endif %}</td>
+              <td>
+                   {{ form.DELETE }}
+              </td>
+            </tr>
+                  {% endwith %}
+                {% endfor %}
+          <tr>
+              <td colspan="5" style="text-align:right"><input type="submit" value="{% trans 'Save' %}"></td>
+          </tr>
+          </tbody>
+        </table>
+    </form>
+</div>
     {% endif %}
 <p>{% blocktranslate count max=contract.max_devices %}Your contract allows <strong>1</strong> device.{% plural %}Your contract allows <strong>{{ max }}</strong> devices.{% endblocktranslate %}
     {% if contract.has_devices %}
@@ -50,12 +69,12 @@
    {% blocktranslate %}Unfortunately, you cannot register new devices.  Contact your plan administrator to allow more devices or change your plan.{% endblocktranslate %}
 </p>
       {% else %}
-   {% blocktranslate count allowed=allowed %}You can register <strong>1</strong> additional device.{% plural %}You can register <strong>{{ allowed }}</strong> additional devices.{% endblocktranslate %}.
+   {% blocktranslate count allowed=allowed %}You can register <strong>1</strong> additional device.{% plural %}You can register <strong>{{ allowed }}</strong> additional devices.{% endblocktranslate %}
 </p>
 <p>
-  <form action="" method="post">
+  <form method="post">
     {% csrf_token %}
-    {{ form }}
+    <input type="hidden" name="add" value="add">
     <input type="submit" value="{% trans 'Register your current device' %}">
   </form>
 </p>

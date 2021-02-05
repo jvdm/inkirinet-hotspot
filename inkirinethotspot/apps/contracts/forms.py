@@ -3,6 +3,8 @@ from django.contrib.auth import authenticate
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as __
 
+from inkirinethotspot.apps.contracts import models
+
 
 class ContractLoginForm(forms.Form):
     """The home contract form used to login users."""
@@ -32,3 +34,10 @@ class ContractLoginForm(forms.Form):
 
     def get_user(self):
         return self.contract.user
+
+
+DevicesFormset = forms.modelformset_factory(
+    models.Device,
+    fields=('description',),
+    can_delete=True,
+    extra=0)
