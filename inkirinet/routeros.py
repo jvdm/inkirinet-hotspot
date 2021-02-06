@@ -125,7 +125,7 @@ class Mikrotik:
         ret = []
         for lease in self.leases.values():
             if (lease['dynamic'] == 'true'
-                    and lease['mac-address'].upper() == mac_address.upper()):
+                    and lease.get('mac-address', '').upper() == mac_address.upper()):
                 ret.append({k: lease[k] for k in keys})
         return ret
 

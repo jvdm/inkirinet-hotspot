@@ -140,19 +140,19 @@ class DeviceManager(models.Manager):
         device, created = self.get_or_create(
             mac_address=mac_address,
             defaults={'contract': contract,
-                      'is_active': False})
+                      'has_lease': False})
         if created:
             logger.info("add(): created a new device: device='%s' "
-                        "contract='%s' is_active=%s",
-                        device, device.contract, device.is_active)
+                        "contract='%s' has_lease=%s",
+                        device, device.contract, device.has_lease)
         elif device.contract != contract:
             logger.error("add(): device belongs to a different contract, "
-                         "ignoring: device='%s' contract='%s' is_active=%s",
-                         device, device.contract, device.is_active)
+                         "ignoring: device='%s' contract='%s' has_lease=%s",
+                         device, device.contract, device.has_lease)
         else:
             logger.error("add(): device already belong to this contract, "
-                         "ignoring: device='%s' contract='%s' is_active=%s",
-                         device, device.contract, device.is_active)
+                         "ignoring: device='%s' contract='%s' has_lease=%s",
+                         device, device.contract, device.has_lease)
 
 
 class Device(models.Model):
@@ -192,4 +192,4 @@ class Device(models.Model):
         help_text=__('Last date and time when contract was updated.'))
 
     def __str__(self):
-        return self.mac_address
+        return f'{self.mac_address}'

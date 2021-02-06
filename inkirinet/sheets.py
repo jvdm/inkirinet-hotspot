@@ -15,7 +15,10 @@ class Spreadsheet:
 
     def __init__(self, key_file, spreadsheet_id):
         credentials = service_account.Credentials.from_service_account_file(key_file)
-        self.sheets = discovery.build('sheets', 'v4', credentials=credentials) \
+        self.sheets = discovery.build('sheets',
+                                      'v4',
+                                      credentials=credentials,
+                                      cache_discovery=False) \
                                .spreadsheets()
         self.spreadsheet_id = spreadsheet_id
 

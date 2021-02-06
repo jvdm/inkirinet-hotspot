@@ -50,7 +50,7 @@ class Command(BaseCommand):
 
         if is_contracted:
             if has_lease:
-                device.is_active = True
+                device.has_lease = True
                 device.save()
             else:
                 api.create_static_lease(self.ADDRESS_POOL,
@@ -69,7 +69,7 @@ class Command(BaseCommand):
             # If device belongs to a contract, keep it so re-enabling contract
             # will bring up the devices automatically.
             if device.contract:
-                device.is_active = False
+                device.has_lease = False
                 device.save()
             else:
                 device.delete()

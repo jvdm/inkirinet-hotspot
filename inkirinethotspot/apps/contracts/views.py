@@ -80,7 +80,8 @@ class HomeView(OneToOneContractRequiredMixin, FormView):
         for device in devices_formset.deleted_objects:
             self.logger.info('To delete: contract=%s device=%s',
                              contract, device)
-            device.delete()
+            device.contract = None
+            device.save()
             self.logger.info('Deleted: contract=%s device=%s',
                              contract, device)
         self.logger.info('Done.')
