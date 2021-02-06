@@ -1,0 +1,137 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-05 21:24-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: templates/contracts/base.html:13
+msgid "Home"
+msgstr "Início"
+
+#: templates/contracts/home.html:6
+msgid "Hello,"
+msgstr "Olá,"
+
+#: templates/contracts/home.html:8
+msgid "Your internet plan is"
+msgstr "O seu plano de internet é"
+
+#: templates/contracts/home.html:10
+msgid "Your contract is"
+msgstr "O seu contrato é"
+
+#: templates/contracts/home.html:10
+msgid "active"
+msgstr "ativo"
+
+#: templates/contracts/home.html:10
+msgid "inactive"
+msgstr "inativo"
+
+#: templates/contracts/home.html:12
+msgid "Your Devices"
+msgstr "Seus Dispositivos"
+
+#: templates/contracts/home.html:22
+msgid "Description"
+msgstr "Descição"
+
+#: templates/contracts/home.html:23
+msgid "MAC address"
+msgstr "Endereço MAC"
+
+#: templates/contracts/home.html:24
+msgid "Registration Date"
+msgstr "Data de Registro"
+
+#: templates/contracts/home.html:25
+msgid "Network Status"
+msgstr "Status na Rede"
+
+#: templates/contracts/home.html:26
+msgid "Remove"
+msgstr "Remover"
+
+#: templates/contracts/home.html:45
+msgid "Active"
+msgstr "Ativo"
+
+#: templates/contracts/home.html:45
+msgid "Pending"
+msgstr "Pendente"
+
+#: templates/contracts/home.html:53
+msgid "Save"
+msgstr "Salvar"
+
+#: templates/contracts/home.html:60
+#, python-format
+msgid "Your contract allows <strong>1</strong> device."
+msgid_plural "Your contract allows <strong>%(max)s</strong> devices."
+msgstr[0] "O seu contrato permite <strong>1</strong> dispositivo."
+msgstr[1] "O seu contrato permite <strong>%(max)s</strong> dispositivos."
+
+#: templates/contracts/home.html:62
+#, python-format
+msgid "You have <strong>1</strong> device registered."
+msgid_plural "You have <strong>%(count)s</strong> devices registered."
+msgstr[0] "Você tem <strong>1</strong> dispositivo registrado."
+msgstr[1] "Você tem <strong>%(count)s</strong> dispositivos registrados."
+
+#: templates/contracts/home.html:64
+msgid "You haven't registered any devices yet."
+msgstr "Você ainda não registrou nenhum dispositivo."
+
+#: templates/contracts/home.html:69
+msgid ""
+"Unfortunately, you cannot register new devices.  Contact your plan "
+"administrator to allow more devices or change your plan."
+msgstr ""
+"Infelizmente você não pode registrar novos dispositivos.  Fale com o "
+"administrador da Inkirinet para mudar o seu plano e liberar mais dispositivos."
+
+#: templates/contracts/home.html:72
+#, python-format
+msgid "You can register <strong>1</strong> additional device."
+msgid_plural ""
+"You can register <strong>%(allowed)s</strong> additional devices."
+msgstr[0] "Você pode registrar <strong>1</strong> dispositivo adicional."
+msgstr[1] "Você pode registrar <strong>%(allowed)s</strong> dispositivos adicionais."
+
+#: templates/contracts/home.html:78
+msgid "Register your current device"
+msgstr "Regisrar o seu dispositivo atual"
+
+#: templates/contracts/home.html:84
+msgid ""
+"Inactive contracts have all their devices disabled. Contact Inkirinet's "
+"support to reactivate your contract."
+msgstr ""
+"Contratos inativos desativam todos os dispositivos na rede, entre em contato "
+"com o suporte Inkirinet para reativas o seu contrato."
+
+#: templates/contracts/login.html:6
+msgid "Welcome"
+msgstr "Bem vindo(a)"
+
+#: templates/contracts/login.html:8
+msgid "Tell us the e-mail you used to view your contract details and devices."
+msgstr "Qual o e-mail do seu contrato Inkirinet?"
+
+#: templates/contracts/login.html:12
+msgid "Submit"
+msgstr "Enviar"
