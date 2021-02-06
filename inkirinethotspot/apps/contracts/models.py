@@ -106,8 +106,8 @@ class Contract(models.Model):
     def save(self, **kwds):
         with transaction.atomic():
             self.user, _ = User.objects.get_or_create(
-                email=self.email,
-                defaults={'username': self.email,
+                username=self.email,
+                defaults={'email': self.email,
                           'first_name': self.first_name,
                           'last_name': self.last_name})
             super().save(**kwds)
