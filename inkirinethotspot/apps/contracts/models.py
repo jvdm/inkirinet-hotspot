@@ -1,8 +1,15 @@
+import logging
+
 import django.contrib.auth
+from django.conf import settings
 from django.db import models
 from django.db import transaction
 from django.utils.translation import gettext_lazy as __
 
+from inkirinet import routeros
+
+
+logger = logging.getLogger(__name__)
 
 User = django.contrib.auth.get_user_model()
 
@@ -116,7 +123,41 @@ class Contract(models.Model):
         return f'{self.full_name} <{self.email}>'
 
 
+class DeviceManager(models.Manager):
+
+    logger = logger.getChild('DeviceManager')
+
+    def get_or_create_from_ip(self, contract, ip_address):
+        with routeros.connect(**settings.ROUTEROS_API) as api:
+            mac_address = api.get_mac_address_by_dynamic_ip(ip_address)
+        if mac_address is None:
+            self.logger.error('add(): could not find the active address for '
+                              'the ip provided, ignoring request: ip_address=%s',
+                              ip_address)
+            return
+        logger.info('add(): found active mac address: ip=%s mac_address=%s',
+                    ip_address, mac_address)
+        device, created = self.get_or_create(
+            mac_address=mac_address,
+            defaults={'contract': contract,
+                      'is_active': False})
+        if created:
+            logger.info("add(): created a new device: device='%s' "
+                        "contract='%s' is_active=%s",
+                        device, device.contract, device.is_active)
+        elif device.contract != contract:
+            logger.error("add(): device belongs to a different contract, "
+                         "ignoring: device='%s' contract='%s' is_active=%s",
+                         device, device.contract, device.is_active)
+        else:
+            logger.error("add(): device already belong to this contract, "
+                         "ignoring: device='%s' contract='%s' is_active=%s",
+                         device, device.contract, device.is_active)
+
+
 class Device(models.Model):
+
+    objects = DeviceManager()
 
     contract = models.ForeignKey(
         Contract,

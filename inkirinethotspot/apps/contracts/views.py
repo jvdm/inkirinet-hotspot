@@ -3,11 +3,13 @@ import logging
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import UserPassesTestMixin
+from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views.generic import FormView
 
 from .forms import ContractLoginForm
 from .forms import DevicesFormset
+from .models import Device
 
 
 logger = logging.getLogger(__name__)
@@ -58,6 +60,11 @@ class HomeView(OneToOneContractRequiredMixin, FormView):
         context['devices_formset'] = context.pop('form')
         return context
 
+    def post(self, request):
+        if request.POST.get('add', '') == 'add':
+            return self.add_current_device()
+        return super().post(request)
+
     def form_valid(self, devices_formset):
         contract = self.request.contract
         self.logger.info('Processing form: contract=%s', contract)
@@ -78,6 +85,11 @@ class HomeView(OneToOneContractRequiredMixin, FormView):
                              contract, device)
         self.logger.info('Done.')
         return super().form_valid(devices_formset)
+
+    def add_current_device(self):
+        ip_address = self.get_request_ip()
+        Device.objects.get_or_create_from_ip(self.request.contract, ip_address)
+        return HttpResponseRedirect(self.get_success_url())
 
 
 class LoginView(auth_views.LoginView):
