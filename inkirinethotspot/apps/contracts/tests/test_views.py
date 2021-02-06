@@ -15,6 +15,7 @@ class TestPublicHome(TestCase):
 
 
 class TestAuthenticatedHome(TestCase):
+
     url = reverse('contracts:home')
 
     def setUp(self):
@@ -115,14 +116,9 @@ class TestAuthenticatedHome(TestCase):
         response = self.get()
 
         self.assertNotContains(response, 'Inactive contracts have all their devices disabled')
-        
-        self.assertContains(response, 'Your contract allows <strong>0</strong> devices.')
-        
-        self.assertNotContains(response, 'You have <strong>0</strong> device registered')
-        self.assertContains(response, "You haven't registered any devices yet")
-
-        self.assertContains(response, 'Unfortunately, you cannot register new devices')
-        self.assertNotContains(response, 'You can register <strong>2</strong> additional device')
+        self.assertContains(response,
+                            "<p>Your contract allows <strong>0</strong> devices and you haven't registered any devices yet. Unfortunately, you cannot register new one, contact your plan administrator to allow you to register more.</p>",
+                            html=True)
 
     def test_when_contract_active_and_no_devices_and_allowed(self):
 
@@ -133,14 +129,9 @@ class TestAuthenticatedHome(TestCase):
         response = self.get()
 
         self.assertNotContains(response, 'Inactive contracts have all their devices disabled')
-
-        self.assertContains(response, 'Your contract allows <strong>3</strong> devices.')
-
-        self.assertNotContains(response, 'You have <strong>0</strong> device registered')
-        self.assertContains(response, "You haven't registered any devices yet")
-
-        self.assertNotContains(response, 'Unfortunately, you cannot register new devices')
-        self.assertContains(response, 'You can register <strong>3</strong> additional device')
+        self.assertContains(response,
+                            "<p>Your contract allows <strong>3</strong> devices and you haven't registered any devices yet. You can still register <strong>3</strong> additional devices.</p>",
+                            html=True)
 
     def test_when_contract_active_and_devices_and_not_allowed(self):
 
@@ -154,14 +145,9 @@ class TestAuthenticatedHome(TestCase):
         response = self.get()
 
         self.assertNotContains(response, 'Inactive contracts have all their devices disabled')
-
-        self.assertContains(response, 'Your contract allows <strong>0</strong> devices.')
-
-        self.assertContains(response, 'You have <strong>2</strong> devices registered')
-        self.assertNotContains(response, "You haven't registered any devices yet")
-
-        self.assertContains(response, 'Unfortunately, you cannot register new devices')
-        self.assertNotContains(response, 'You can register <strong>3</strong> additional device')
+        self.assertContains(response,
+                            "<p>Your contract allows <strong>0</strong> devices and you have <strong>2</strong> devices registered. Unfortunately, you cannot register new one, contact your plan administrator to allow you to register more.</p>",
+                            html=True)
 
         self.assertContains(response, '<td>mac-address-foo</td>', html=True)
         self.assertContains(response, '<td>max-address-bar</td>', html=True)
@@ -178,15 +164,9 @@ class TestAuthenticatedHome(TestCase):
         response = self.get()
 
         self.assertNotContains(response, 'Inactive contracts have all their devices disabled')
-
-        self.assertContains(response, 'Your contract allows <strong>3</strong> devices.')
-
-        self.assertContains(response, 'You have <strong>2</strong> devices registered')
-        self.assertNotContains(response, "You haven't registered any devices yet")
-
-        self.assertNotContains(response, 'Unfortunately, you cannot register new devices')
-        self.assertContains(response, 'You can register <strong>1</strong> additional device')
-
+        self.assertContains(response,
+                            "<p>Your contract allows <strong>3</strong> devices and you have <strong>2</strong> devices registered. You can still register <strong>1</strong> additional device.</p>",
+                            html=True)
         self.assertContains(response, '<td>mac-address-foo</td>', html=True)
         self.assertContains(response, '<td>max-address-bar</td>', html=True)
 

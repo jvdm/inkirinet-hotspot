@@ -5,7 +5,7 @@
 {% block content %}
 <h2>{% trans 'Hello,' %} {{ contract.full_name }}</h2>
 
-<p>{% trans 'Your internet plan is' %} <strong>{{ contract }}</strong>.</p>
+<p>{% trans 'Your internet plan is' %} <strong>{{ contract.get_plan_type_display }}</strong>.</p>
 
 <p>{% trans 'Your contract is' %} {% if contract.is_active %}<span style="color: green">{% trans 'active' %}</span>{% else %}<span style="color: red">{% trans 'inactive' %}</span>{% endif %}.</p>
 
@@ -57,19 +57,19 @@
     </form>
 </div>
     {% endif %}
-<p>{% blocktranslate count max=contract.max_devices %}Your contract allows <strong>1</strong> device.{% plural %}Your contract allows <strong>{{ max }}</strong> devices.{% endblocktranslate %}
+<p>{% blocktranslate count max=contract.max_devices %}Your contract allows <strong>1</strong> device{% plural %}Your contract allows <strong>{{ max }}</strong> devices{% endblocktranslate %}
     {% if contract.has_devices %}
-{% blocktranslate count count=contract.devices_count %}You have <strong>1</strong> device registered.{% plural %}You have <strong>{{ count }}</strong> devices registered.{% endblocktranslate %}
+{% blocktranslate count count=contract.devices_count %}and you have <strong>1</strong> device registered.{% plural %}and you have <strong>{{ count }}</strong> devices registered.{% endblocktranslate %}
     {% else %}
-{% blocktranslate %}You haven't registered any devices yet.{% endblocktranslate %}
+{% blocktranslate %}and you haven't registered any devices yet.{% endblocktranslate %}
     {% endif %}
 
     {% with allowed=contract.devices_allowed %}
       {% if allowed <= 0 %}
-   {% blocktranslate %}Unfortunately, you cannot register new devices.  Contact your plan administrator to allow more devices or change your plan.{% endblocktranslate %}
+   {% blocktranslate %}Unfortunately, you cannot register new one, contact your plan administrator to allow you to register more.{% endblocktranslate %}
 </p>
       {% else %}
-   {% blocktranslate count allowed=allowed %}You can register <strong>1</strong> additional device.{% plural %}You can register <strong>{{ allowed }}</strong> additional devices.{% endblocktranslate %}
+   {% blocktranslate count allowed=allowed %}You can still register <strong>1</strong> additional device.{% plural %}You can still register <strong>{{ allowed }}</strong> additional devices.{% endblocktranslate %}
 </p>
 <p>
   <form method="post">
