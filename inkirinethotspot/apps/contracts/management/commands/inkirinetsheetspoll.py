@@ -11,13 +11,17 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         sheet = Spreadsheet(**settings.GOOGLE_SHEETS)
         for sheet_contract in sheet.read_all().values():
+            first_name = sheet_contract.name
+            last_name = ''
+            if ' ' in first_name:
+                first_name, last_name = first_name.split(' ', 1)
             contract, created = models.Contract.objects.get_or_create(
                 email=sheet_contract.email,
                 defaults={
-                    'name': sheet_contract.name,
+                    'first_name': first_name,
+                    'last_name': last_name,
                     'plan_type': sheet_contract.plan_type,
-                    'active': sheet_contract.active,
-                    'created_at': sheet_contract.created_at,
+                    'is_active': sheet_contract.active,
                     'max_devices': sheet_contract.max_devices,
                 })
             if created:
