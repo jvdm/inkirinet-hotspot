@@ -66,8 +66,8 @@ class Spreadsheet:
 
         email = row[6].lower()
 
-        # row[9] = "Pago", row[12] = "Cancelado/Pausado".
-        active = (row[11] == 'TRUE' and row[12] != 'TRUE')
+        # Plans are marked as "active" when being imported.
+        active = True
 
         # Force UTC-3 given the database was created in Brazilian timezone.
         created_at = datetime.datetime.strptime(row[0] + ' -0300', '%d/%m/%Y %H:%M:%S %z')
